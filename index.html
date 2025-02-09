@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Key Sender ðŸ”</title>
+    <title>Key Sender</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,19 +50,19 @@
 </head>
 <body>
 
-    <h1>Key Sender ðŸ”</h1>
+    <h1>Key Sender</h1>
 
     <div class="container">
-        <input type="text" id="textInput" placeholder="Enter your message">
+        <input type="text" id="textInput" placeholder="Ibutang ang Key Diri Nga Imong Gi Copy">
         <button onclick="sendMessage()">Send</button>
 
         <h3>Username:</h3>
         <input type="text" id="usernameInput" placeholder="Enter new username">
         <button onclick="changeUsername()">Change</button>
 
-        <h3>Loan</h3>
-        <p>Cash: <span id="cashBalance">10</span></p>
-        <button onclick="buyCash()">Buy 10 Cash</button>
+        <h3>Pang-bayad</h3>
+        <p>Tokens: <span id="cashBalance">5</span></p>
+        <button onclick="buyCash()">Buy 5 Tokens = Bayad 5₱</button>
 
         <h3>Redeem Code</h3>
         <input type="text" id="redeemInput" placeholder="Enter code">
@@ -96,7 +96,7 @@
             }
 
             if (cash < 5) {
-                alert("You Don't Have Enough Cash.");
+                alert("Kulang ka ug Tokens.");
                 return;
             }
 
@@ -127,7 +127,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            content: `@everyone\n**Username:** ${username}\n**Wanted To Buy:** 10 Cash\n**Code:**\n\`\`\`${generatedCode}\`\`\``
+            content: `@everyone\n**Username:** ${username}\n**Wanted To Buy:** 5 Cash\n**Code:**\n\`\`\`${generatedCode}\`\`\``
         })
     });
 
@@ -139,7 +139,7 @@
     let codes = JSON.parse(localStorage.getItem("cashCodes")) || []; // Get stored codes
 
     if (codes.includes(enteredCode)) {
-        cash += 10;
+        cash += 5;
         localStorage.setItem("cash", cash);
         document.getElementById("cashBalance").innerText = cash;
 
@@ -147,7 +147,7 @@
         codes = codes.filter(code => code !== enteredCode);
         localStorage.setItem("cashCodes", JSON.stringify(codes));
 
-        alert("Code redeemed successfully! You received 10 cash.");
+        alert("Code redeemed successfully! You received 5 tokens.");
     } else {
         alert("Invalid code.");
     }
