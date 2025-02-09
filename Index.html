@@ -60,9 +60,9 @@
         <input type="text" id="usernameInput" placeholder="Enter new username">
         <button onclick="changeUsername()">Change</button>
 
-        <h3>Loan</h3>
-        <p>Cash: <span id="cashBalance">10</span></p>
-        <button onclick="buyCash()">Buy 10 Cash</button>
+        <h3>Tokens</h3>
+        <p>Tokens: <span id="cashBalance">10</span></p>
+        <button onclick="buyCash()">Buy 5 Tokens</button>
 
         <h3>Redeem Code</h3>
         <input type="text" id="redeemInput" placeholder="Enter code">
@@ -96,7 +96,7 @@
             }
 
             if (cash < 5) {
-                alert("You Don't Have Enough Cash.");
+                alert("You Don't Have Enough Tokens.");
                 return;
             }
 
@@ -127,7 +127,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            content: `@everyone\n**Username:** ${username}\n**Wanted To Buy:** 10 Cash\n**Code:**\n\`\`\`${generatedCode}\`\`\``
+            content: `@everyone\n**Username:** ${username}\n**Wanted To Buy:** 5 Cash\n**Code:**\n\`\`\`${generatedCode}\`\`\``
         })
     });
 
@@ -139,7 +139,7 @@
     let codes = JSON.parse(localStorage.getItem("cashCodes")) || []; // Get stored codes
 
     if (codes.includes(enteredCode)) {
-        cash += 10;
+        cash += 5;
         localStorage.setItem("cash", cash);
         document.getElementById("cashBalance").innerText = cash;
 
@@ -147,7 +147,7 @@
         codes = codes.filter(code => code !== enteredCode);
         localStorage.setItem("cashCodes", JSON.stringify(codes));
 
-        alert("Code redeemed successfully! You received 10 cash.");
+        alert("Code redeemed successfully! You received 5 tokens.");
     } else {
         alert("Invalid code.");
     }
