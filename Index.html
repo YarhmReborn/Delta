@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Sender ðŸ”</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 5px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+        }
+        input {
+            background: #333;
+            color: white;
+            border: 1px solid #444;
+        }
+        button {
+            background: #008CBA;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #005f73;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Key Sender ðŸ”</h1>
+
+    <div class="container">
+        <input type="text" id="textInput" placeholder="Enter your message">
+        <button onclick="sendMessage()">Send</button>
+
+        <h3>Username:</h3>
+        <input type="text" id="usernameInput" placeholder="Enter new username">
+        <button onclick="changeUsername()">Change</button>
+
+        <h3>Loan</h3>
+        <p>Cash: <span id="cashBalance">10</span></p>
+        <button onclick="buyCash()">Buy 10 Cash</button>
+
+        <h3>Redeem Code</h3>
+        <input type="text" id="redeemInput" placeholder="Enter code">
+        <button onclick="redeemCode()">Redeem</button>
+    </div>
+
+    <script>
+        const webhookURL = "https://discord.com/api/webhooks/1336976741792616559/jUSobD_bZp9E07HuGijWU68g6vOONbNwAKRR2s60xC7uNrgepvwOC4XYWbty_ggCVtB2";
+        let username = localStorage.getItem("username") || "Player User";
+        let cash = localStorage.getItem("cash") ? parseInt(localStorage.getItem("cash")) : 10;
+        let storedCode = localStorage.getItem("cashCode") || "";
+
+        document.getElementById("cashBalance").innerText = cash;
+
+        function changeUsername() {
+            let newUsername = document.getElementById("usernameInput").value.trim();
+            if (newUsername) {
+                username = newUsername;
+                localStorage.setItem("username", username);
+                alert("Username changed to: " + username);
+            } else {
+                alert("Please enter a valid username.");
+            }
+        }
+
+        function sendMessage() {
+            let message = document.getElementById("textInput").value.trim();
+            if (!message) {
+                alert("Please enter a message.");
+                return;
+            }
+
+            if (cash < 5) {
+                alert("You Don't Have Enough Cash.");
+                return;
+            }
+
+            fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    content: `@everyone\n**Username:** ${username}\n**Text:**\n\`\`\`${message}\`\`\``
+                })
+            });
+
+            alert("Message sent!");
+
+            cash -= 5;
+            localStorage.setItem("cash", cash);
+            document.getElementById("cashBalance").innerText = cash;
+        }
+
+        function buyCash() {
+    let generatedCode = generateRandomCode();
+
+    // Retrieve existing codes or create an empty array
+    let codes = JSON.parse(localStorage.getItem("cashCodes")) || [];
+    codes.push(generatedCode); // Add new code to the list
+    localStorage.setItem("cashCodes", JSON.stringify(codes)); // Save updated list
+
+    fetch(webhookURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            content: `@everyone\n**Username:** ${username}\n**Wanted To Buy:** 10 Cash\n**Code:**\n\`\`\`${generatedCode}\`\`\``
+        })
+    });
+
+    alert("A code has been generated and sent to the webhook!");
+}
+
+        function redeemCode() {
+    let enteredCode = document.getElementById("redeemInput").value.trim();
+    let codes = JSON.parse(localStorage.getItem("cashCodes")) || []; // Get stored codes
+
+    if (codes.includes(enteredCode)) {
+        cash += 10;
+        localStorage.setItem("cash", cash);
+        document.getElementById("cashBalance").innerText = cash;
+
+        // Remove the used code from the list
+        codes = codes.filter(code => code !== enteredCode);
+        localStorage.setItem("cashCodes", JSON.stringify(codes));
+
+        alert("Code redeemed successfully! You received 10 cash.");
+    } else {
+        alert("Invalid code.");
+    }
+}
+
+        function generateRandomCode() {
+    return Math.random().toString(36).substring(2, 10).toUpperCase();
+}
+    </script>
+
+</body>
+</html>
