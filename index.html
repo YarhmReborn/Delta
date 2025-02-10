@@ -46,6 +46,12 @@
         button:hover {
             background: #005f73;
         }
+        .reset-btn {
+            background: #ff4c4c;
+        }
+        .reset-btn:hover {
+            background: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -67,12 +73,15 @@
         <h3>Redeem Code</h3>
         <input type="text" id="redeemInput" placeholder="Enter code">
         <button onclick="redeemCode()">Redeem</button>
+
+        <h3>Admin Controls</h3>
+        <button class="reset-btn" onclick="resetData()">Reset All Data</button>
     </div>
 
     <script>
         const webhookURL = "https://discord.com/api/webhooks/1336976741792616559/jUSobD_bZp9E07HuGijWU68g6vOONbNwAKRR2s60xC7uNrgepvwOC4XYWbty_ggCVtB2";
         let username = localStorage.getItem("username") || "Player User";
-        let cash = localStorage.getItem("cash") ? parseInt(localStorage.getItem("cash")) : 0; // Start with 0
+        let cash = localStorage.getItem("cash") ? parseInt(localStorage.getItem("cash")) : 0;
         let storedCode = localStorage.getItem("cashCode") || "";
 
         document.getElementById("cashBalance").innerText = cash;
@@ -117,7 +126,6 @@
 
         function buyCash() {
             let generatedCode = generateRandomCode();
-
             let codes = JSON.parse(localStorage.getItem("cashCodes")) || [];
             codes.push(generatedCode);
             localStorage.setItem("cashCodes", JSON.stringify(codes));
@@ -149,6 +157,12 @@
             } else {
                 alert("Invalid code.");
             }
+        }
+
+        function resetData() {
+            localStorage.clear();
+            alert("All data has been reset!");
+            location.reload();
         }
 
         function generateRandomCode() {
