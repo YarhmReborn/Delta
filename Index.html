@@ -61,8 +61,8 @@
         <button onclick="changeUsername()">Change</button>
 
         <h3>Pang-bayad</h3>
-        <p>Tokens: <span id="cashBalance">5</span></p>
-        <button onclick="buyCash()">Buy 5 Tokens = Bayad 5₱</button>
+        <p>Tokens: <span id="cashBalance">0</span></p>
+        <button onclick="buyCash()">Buy 5 Tokens = Bayad 5</button>
 
         <h3>Redeem Code</h3>
         <input type="text" id="redeemInput" placeholder="Enter code">
@@ -72,7 +72,7 @@
     <script>
         const webhookURL = "https://discord.com/api/webhooks/1336976741792616559/jUSobD_bZp9E07HuGijWU68g6vOONbNwAKRR2s60xC7uNrgepvwOC4XYWbty_ggCVtB2";
         let username = localStorage.getItem("username") || "Player User";
-        let cash = localStorage.getItem("cash") ? parseInt(localStorage.getItem("cash")) : 10;
+        let cash = localStorage.getItem("cash") ? parseInt(localStorage.getItem("cash")) : 0; // Start with 0
         let storedCode = localStorage.getItem("cashCode") || "";
 
         document.getElementById("cashBalance").innerText = cash;
@@ -116,46 +116,44 @@
         }
 
         function buyCash() {
-    let generatedCode = generateRandomCode();
+            let generatedCode = generateRandomCode();
 
-    // Retrieve existing codes or create an empty array
-    let codes = JSON.parse(localStorage.getItem("cashCodes")) || [];
-    codes.push(generatedCode); // Add new code to the list
-    localStorage.setItem("cashCodes", JSON.stringify(codes)); // Save updated list
+            let codes = JSON.parse(localStorage.getItem("cashCodes")) || [];
+            codes.push(generatedCode);
+            localStorage.setItem("cashCodes", JSON.stringify(codes));
 
-    fetch(webhookURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            content: `@everyone\n**Username:** ${username}\n**Wanted To Buy:** 5 Cash\n**Code:**\n\`\`\`${generatedCode}\`\`\``
-        })
-    });
+            fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    content: `@everyone\n**Username:** ${username}\n**Wanted To Buy:** 5 Cash\n**Code:**\n\`\`\`${generatedCode}\`\`\``
+                })
+            });
 
-    alert("A code has been generated and sent to the webhook!");
-}
+            alert("A code has been generated and sent to the webhook!");
+        }
 
         function redeemCode() {
-    let enteredCode = document.getElementById("redeemInput").value.trim();
-    let codes = JSON.parse(localStorage.getItem("cashCodes")) || []; // Get stored codes
+            let enteredCode = document.getElementById("redeemInput").value.trim();
+            let codes = JSON.parse(localStorage.getItem("cashCodes")) || [];
 
-    if (codes.includes(enteredCode)) {
-        cash += 5;
-        localStorage.setItem("cash", cash);
-        document.getElementById("cashBalance").innerText = cash;
+            if (codes.includes(enteredCode)) {
+                cash += 5;
+                localStorage.setItem("cash", cash);
+                document.getElementById("cashBalance").innerText = cash;
 
-        // Remove the used code from the list
-        codes = codes.filter(code => code !== enteredCode);
-        localStorage.setItem("cashCodes", JSON.stringify(codes));
+                codes = codes.filter(code => code !== enteredCode);
+                localStorage.setItem("cashCodes", JSON.stringify(codes));
 
-        alert("Code redeemed successfully! You received 5 tokens.");
-    } else {
-        alert("Invalid code.");
-    }
-}
+                alert("Code redeemed successfully! You received 5 tokens.");
+            } else {
+                alert("Invalid code.");
+            }
+        }
 
         function generateRandomCode() {
-    return Math.random().toString(36).substring(2, 10).toUpperCase();
-}
+            return Math.random().toString(36).substring(2, 10).toUpperCase();
+        }
     </script>
 
 </body>
